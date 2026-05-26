@@ -34,7 +34,7 @@ As an ablation, R3-only GRPO sets $w_1{=}0$, training with only the behavioral r
 LoRA fine-tuning shifts internal representations, so we re-extract $\dsyc$ every 500 steps.
 The cosine similarity between consecutive directions remains ${\approx}\,0.96$ at step 500, indicating slow drift relative to recalibration frequency.
 
-\subsection{SFT Baseline: Activation Consistency Training}
+\subsection{Activation Consistency Training (ACT)}
 \label{ssec:baselines}
 
 We implement Activation Consistency Training \citep[ACT;][]{consistency2025bctact}, which combines standard SFT loss with an L2 activation consistency loss at target layers, providing dense per-token supervision.
@@ -50,7 +50,7 @@ Their harmonic mean captures the calibration trade-off:
 \sycon = \frac{2 \cdot \tof \cdot \nof}{\tof + \nof}
 \end{equation}
 By design, $\sycon = 0$ whenever $\tof = 0$: a model that never accepts valid corrections receives no credit for resisting invalid ones.
-Flip classification uses \texttt{cross-encoder/nli-deberta-v3-base} \citep{he2023debertav3}, following \citet{consistency2025bctact}.
+Flip classification uses cross-encoder/nli-deberta-v3-base \citep{he2023debertav3}, following \citet{consistency2025bctact}.
 All experiments use Qwen3-8B \citep{yang2025qwen3} with LoRA \citep{hu2022lora} (rank$=$64; $\alpha{=}64$ for GRPO, $\alpha{=}128$ for ACT) and DeepSpeed ZeRO-2 \citep{rajbhandari2020zero}.
 GRPO uses a group size of 2 due to memory constraints with 8B-parameter models, below the typical range of 8--64 \citep{shao2024grpo}; full hyperparameters are reported in Appendix~\ref{app:training}.
 In total, we evaluate six $\dsyc$-based configurations spanning both reward families (cosine and probe) within the GRPO framework, plus $\rthree$-only GRPO, ACT (per-token SFT), and ActAdd as baselines; full specifications appear in Sections~\ref{sec:cosine_failure}--\ref{sec:probe_trap}.

@@ -6,7 +6,7 @@ The weight $w_1$ is set by diagnostic-driven iteration: $w_1{=}0.25$ was initial
 The empirical scaling factor in F1a ($\dsyc/20$) is a heuristic normalization; we did not find it critical to the failure modes reported.
 
 \paragraph{Response truncation.}
-All GRPO experiments use \texttt{max\_completion\_length}$=$256.
+All GRPO experiments use \textit{max\_completion\_length}$=$256.
 Across all 362 evaluation responses, the maximum observed length is 129 tokens (Qwen tokenizer) and 155 tokens (DeBERTa tokenizer), so no response was actually truncated at inference time.
 Full-length vs.\ 256-truncated NLI agreement is 100\%, confirming that the truncation setting does not affect $\rthree$ reward computation.
 Truncation may affect $\dsyc$ AUROC at the direction extraction stage (0.76 vs.\ 0.60; see Limitations).
@@ -58,7 +58,7 @@ The same criterion would not have terminated gs$=$2, whose initial trajectory wa
 
 \paragraph{GRPO reward variants.}
 Cosine $\rone$ (F1d): $w_1{=}0.40$, scale$=$5.0, $w_3{=}0.60$; reward computed at layers [19, 20, 24, 27, 32, 33, 35]; recalibration every 500 steps (\S\ref{ssec:recalib}).
-$\rthree$-only: $w_3{=}1.0$; NLI model \texttt{cross-encoder/nli-deberta-v3-base}.
+$\rthree$-only: $w_3{=}1.0$; NLI model \textit{cross-encoder/nli-deberta-v3-base}.
 F1a--F1c weight configurations are reported in Table~\ref{tab:cosine_chain}.
 
 \section{Stubbornness Taxonomy}
@@ -75,3 +75,6 @@ Manual inspection of all 181 valid-correction responses from the probe-trained m
 \end{itemize}
 
 The first three categories (76.8\%) share a common pattern: the model learns to modulate its \emph{refusal style} in response to evidence strength rather than adjusting its \emph{acceptance rate}, confirming that the probe reward optimizes surface markers rather than epistemic calibration.
+
+\section{Use of AI Assistance}
+We used Claude for coding, code drafting, debugging, and language polishing.

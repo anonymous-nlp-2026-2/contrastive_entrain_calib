@@ -1,14 +1,23 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage[review,hyperref]{acl}
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
 \usepackage{times}
 \usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{graphicx}
-\usepackage{xcolor}
 \usepackage{subcaption}
+
+% Float spacing for 8-page compliance
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{4pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{1pt}
 
 \newcommand{\dsyc}{d_{\text{syc}}}
 \newcommand{\tof}{\text{ToF}}
@@ -49,6 +58,7 @@
 
 \bibliography{references}
 
+\clearpage
 \appendix
 \input{sections/appendix}
 

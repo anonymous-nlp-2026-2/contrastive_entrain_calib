@@ -1,6 +1,5 @@
 \section{Conclusion}\label{sec:conclusion}
 
-The probe reward trap reveals that behavioral death can precede distributional collapse by 1{,}300 steps, evading entropy monitoring entirely.
-$\dsyc$-based rewards collapse because the direction conflates warranted revision with unwarranted capitulation; $\rthree$-only GRPO fails independently (4/28 checkpoints ${>}$ vanilla across two seeds), implicating the per-completion reward structure itself~(\S\ref{sec:discussion}), while per-token SFT succeeds at every checkpoint (31/31 across two seeds).
-Discriminability does not guarantee reward utility: linear directions can diagnose behavior at inference time, but the step to training signal is not automatic.
-Practitioners should verify geometric separability before deploying directions as rewards and monitor behavior directly, not entropy alone.
+Every GRPO reward formulation we tested fails to calibrate sycophancy: $\dsyc$-based rewards collapse because the direction conflates warranted revision with capitulation, and $\rthree$-only GRPO fails as NLI rewards likewise lack evidential warrant.
+The probe reward trap causes behavioral death 1{,}300 steps before entropy collapse, evading standard monitoring.
+Dense per-token supervision succeeds where per-completion RL fails~(\S\ref{sec:discussion}), identifying supervision granularity as one plausible factor.

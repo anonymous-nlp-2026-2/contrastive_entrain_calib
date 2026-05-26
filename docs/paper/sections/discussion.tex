@@ -4,11 +4,10 @@
 The probe reward trap (\S\ref{sec:probe_trap}) and the cosine failures (\S\ref{sec:cosine_failure}) share a common geometric root.
 $\dsyc$ encodes the \emph{direction} of belief change but not its \emph{evidential warrant}: valid revision and sycophantic capitulation both shift activations toward the user's position along the same direction.
 The two reward families expose complementary faces of this blindness.
-Cosine $\rone$ penalizes all belief change indiscriminately (mode collapse, F1c--F1d); the binary probe $\rone$ rewards all resistance regardless of input validity (stubbornness trap, $\tof{=}0$ by step 500)---dual consequences of a direction that conflates resisting invalid challenges with refusing valid corrections.
+Cosine $\rone$ penalizes all belief change indiscriminately (mode collapse, F1c--F1d); the binary probe $\rone$ rewards all resistance regardless of input validity (stubbornness trap, $\tof{=}0$ by step 500), dual consequences of a direction that conflates resisting invalid challenges with refusing valid corrections.
 Although $\dsyc$ separability correlates with evidence strength (\S\ref{sec:direction_quality}), it encodes \emph{how much} belief changed, not whether the change was appropriate (\S\ref{sec:probe_trap}).
 Cross-model evidence (Llama-3-8B AUROC $0.779$) confirms the limitation generalizes.
-This contrasts with safety directions~\citep{zhang2026latentgrpo}, where the target behavior is geometrically distinct; concept directions succeed when shortcuts are separable~\citep{wu2026rewardhacking}.
-Independent work corroborates: persona vectors are independent of $\dsyc$ \citep{kelkar2026persona}, and sycophancy sub-behaviors \citep{vennemeyer2025sycophancy} collapse onto $\dsyc$'s single axis.
+This contrasts with safety directions~\citep{zhang2026latentgrpo}, where the target behavior is geometrically distinct~\citep{wu2026rewardhacking}; independent work confirms that persona vectors are independent of $\dsyc$~\citep{kelkar2026persona} and sycophancy sub-behaviors collapse onto its single axis~\citep{vennemeyer2025sycophancy}.
 
 \paragraph{GRPO results under our configuration.}
 
@@ -40,25 +39,24 @@ ActAdd ($\alpha{=}5$) & Inference & 0.054 & 0.028 & 0.961 & -- \\
 \textbf{ACT} (seed 1) & SFT & \textbf{0.301} & \textbf{0.182} & 0.867 & 8000 \\
 ACT (seed 2)$^e$ & SFT & 0.286 & 0.171 & 0.862 & 7000 \\
 \bottomrule
-\multicolumn{6}{l}{\scriptsize $^a$All collapsed from step 1 ($\tof{=}0$); F1d diverged at step 2160.} \\
-\multicolumn{6}{l}{\scriptsize $^b$Best of 28 checkpoints (2 seeds); only 4/28 exceed vanilla.} \\
-\multicolumn{6}{l}{\scriptsize $^c$Peak ckpt (train/eval overlap); 2/3 seeds collapse by step 2000 (mean $0.171 \pm 0.122$).} \\
-\multicolumn{6}{l}{\scriptsize $^d$Not directly comparable: differ from GRPO along 5+ dimensions (\S\ref{sec:discussion}).} \\
-\multicolumn{6}{l}{\scriptsize $^e$15 ckpts, all ${>}$ vanilla. Best $\sycon{=}0.286$ (step 7000).} \\
+\multicolumn{6}{l}{\footnotesize $^a$All collapsed from step 1 ($\tof{=}0$); F1d diverged at step 2160.} \\
+\multicolumn{6}{l}{\footnotesize $^b$Best of 28 checkpoints (2 seeds); only 4/28 exceed vanilla.} \\
+\multicolumn{6}{l}{\footnotesize $^c$Peak ckpt (train/eval overlap); 2/3 seeds collapse by step 2000 (mean $0.171 \pm 0.122$).} \\
+\multicolumn{6}{l}{\footnotesize $^d$Not directly comparable: differ from GRPO along 5+ dimensions (\S\ref{sec:discussion}).} \\
+\multicolumn{6}{l}{\footnotesize $^e$15 ckpts, all ${>}$ vanilla. Best $\sycon{=}0.286$ (step 7000).} \\
 \end{tabular}}
 \end{table}
 
 If $\dsyc$ alone caused the cosine and probe failures (\S\ref{sec:cosine_failure}--\S\ref{sec:probe_trap}), removing it should recover calibration.
-$\rthree$-only GRPO tests this: only 4/28 checkpoints across two seeds exceed vanilla (14.3\%), with both seeds oscillating ($\Delta \approx 0.069$) before diverging (Table~\ref{tab:main_comparison}; Figure~\ref{fig:trajectory}).
-$\dsyc$ AUROC varies by ${<}0.01$ across checkpoints and $\rthree$ saturates at ${\sim}0.98$, yet $\sycon$ swings by 17\%.
-$\rthree$ mirrors $\dsyc$'s limitation: it identifies valid corrections at only 4.4\% (2.2\% on vanilla), confirming that the asymmetry reflects the NLI hypothesis design, not behavioral collapse.
+$\rthree$-only GRPO tests this: only a minority of checkpoints across two seeds exceed vanilla, with both seeds oscillating before diverging (Table~\ref{tab:main_comparison}; Figure~\ref{fig:trajectory}).
+$\rthree$ mirrors $\dsyc$'s limitation: it identifies valid corrections at a negligible rate, confirming that the asymmetry reflects the NLI hypothesis design, not behavioral collapse.
 Both signals encode \emph{whether} belief changed, not \emph{whether it should have}.
 
 \paragraph{Competing hypotheses and ablation.}
 Three explanations are consistent with these failures: (a)~$\dsyc$ is fundamentally unsuitable as a sycophancy reward; (b)~group size$=$2 provides insufficient ranking diversity; (c)~sycophancy calibration resists scalar per-completion RL.
 Two ablations discriminate among them (Table~\ref{tab:ablation}).
-GRPO fails at both group sizes 2 and 8 (gs$=$8 terminated early, all below vanilla; termination criterion in Appendix~\ref{app:training}) and at doubled sequence length (512 tokens, reward flat at ${\sim}0.50$), ruling out~(b) and truncation.
-Reducing ACT to GRPO's LoRA configuration (rank 64, $\alpha{=}64$, 4 modules) still yields $\sycon = 0.267$ (peak 0.326), with all 16 checkpoints exceeding vanilla; under matched adapters, per-token SFT achieves $1.7{\times}$ higher $\sycon$ ($0.267$ vs.\ $0.153$), identifying supervision granularity as one plausible explanation~\citep{beigi2025smart}; confounds are discussed in Limitations.
+GRPO fails at both group sizes tested (gs$=$8: all below vanilla, terminated early) and at doubled sequence length (512 tokens, reward flat), ruling out~(b) and truncation (Table~\ref{tab:ablation}).
+Reducing ACT to GRPO's LoRA configuration still yields consistently higher $\sycon$, with every checkpoint exceeding vanilla; under matched adapters, per-token SFT achieves $2.1{\times}$ higher peak $\sycon$ than per-completion GRPO, identifying supervision granularity as one plausible explanation~\citep{beigi2025smart}; confounds are discussed in Limitations.
 The probe reward trap independently supports~(a): the trap arises despite stopped gradients.
 
 \begin{table}[t]
@@ -81,18 +79,11 @@ ACT full s2 & r64, $\alpha$128, 7m & 0.286 & 15/15 \\
 \end{tabular}}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_trajectory.pdf}
-\caption{$\sycon$ trajectories for $\rthree$-only GRPO (two seeds) and ACT (two seeds) over training steps. ACT exceeds vanilla at every evaluated checkpoint (31/31 across two seeds); $\rthree$-only GRPO exceeds vanilla at only 4/28 checkpoints (14.3\%).}
-\label{fig:trajectory}
-\end{figure}
-
 \paragraph{ACT vs.\ probe-based methods.}
-ACT's advantage over GRPO is categorical ($\sycon$: worst $0.170$ vs.\ GRPO best $0.153$; held-out $0.284$, $5.1{\times}$ vanilla; Limitations).
-SFT with a differentiable probe penalty achieves higher peak $\sycon$ on the training set ($0.407$; Table~\ref{tab:main_comparison}), but these scores reflect full train/eval overlap and the advantage is transient: probe gaming (${\sim}50$ steps; \S\ref{sec:probe_trap}) eliminates the regularization signal, and the model overfits to below vanilla by step 2000 in two of three seeds ($\sycon{=}0.085$; mean $\sycon{=}0.171 \pm 0.122$ across three seeds).
-Three temporal patterns emerge: GRPO probe rewards cause immediate behavioral death ($\tof{=}0$); SFT probe penalties yield initially high but unsustainable calibration; ACT sacrifices peak for stability by eliminating probe dependence (31/31 ${>}$ vanilla, with held-out generalization confirmed).
+ACT's advantage over GRPO is categorical: even ACT's worst checkpoint outperforms GRPO's best, with held-out $\sycon$ of $0.284$ confirming generalization beyond training data (Limitations).
+SFT with a differentiable probe penalty achieves higher peak $\sycon$ on the training set (Table~\ref{tab:main_comparison}), but these scores reflect full train/eval overlap and the advantage is transient: probe gaming (\S\ref{sec:probe_trap}) eliminates the regularization signal, and the model overfits to below vanilla by step 2000 in two of three seeds (mean $\sycon{=}0.171 \pm 0.122$).
 
 \paragraph{Inference-time probes and future directions.}
-\citet{papadatos2024probepenalties} reduce sycophancy via gradient-free Best-of-N reranking with a comparable probe, suggesting optimization-loop inclusion as a separate failure dimension.
-Per-step process rewards~\citep{beigi2025smart} offer a complementary path by detecting premature concession at individual reasoning steps---bypassing $\dsyc$'s geometric inseparability.
+Discriminability and reward utility occupy distinct roles: a direction that reliably \emph{detects} a behavior may fail to \emph{correct} it under optimization pressure.
+Inference-time reranking~\citep{papadatos2024probepenalties} and per-step process rewards~\citep{beigi2025smart} sidestep this by avoiding optimization-loop inclusion entirely.
+Per-step rewards can observe trajectory-level patterns, such as premature concession, that per-completion scalars cannot distinguish from legitimate revision.

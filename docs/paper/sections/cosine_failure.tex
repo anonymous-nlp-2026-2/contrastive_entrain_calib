@@ -1,7 +1,7 @@
 \section{Cosine \texorpdfstring{$\rone$}{R1}: Structural Failure}
 \label{sec:cosine_failure}
 
-During GRPO training, 256-token truncation reduces $\dsyc$ AUROC from 0.827 (offline CV) to approximately 0.60, so the optimizer works with a substantially weaker signal than the offline metrics suggest.
+During GRPO training, $\dsyc$ AUROC drops from 0.827 (offline CV) to approximately 0.60: distribution shift accounts for part of this gap (0.827$\to$0.76 on full responses) and 256-token truncation for the remainder (0.76$\to$0.60), so the optimizer works with a substantially weaker signal than the offline metrics suggest.
 We test whether even this degraded discriminability translates into a viable reward through four configurations that form a diagnostic chain (Table~\ref{tab:cosine_chain}): each resolves the failure mode of its predecessor but exposes a deeper limitation.
 
 \begin{table}[t]
@@ -22,10 +22,10 @@ F1d & $5\cos(\mathbf{h},\, \dsyc)$ & 0.40 & Mode collapse & $\rthree$ saturation
 \end{table}
 
 The diagnostic chain begins with a norm mismatch.
-F1a's dot-product formulation ($\rone = \tanh(\mathbf{h} \cdot \dsyc / 20)$) saturates because residual-stream norms exceed the direction norm by $100$--$1{,}200{\times}$, zeroing the gradient by step 955.
-Cosine similarity (F1b) eliminates this norm dependence but reveals a second problem: the gap between valid and sycophantic cosines averages only 0.098, too narrow for meaningful reward contrast.
-Recalibration (F1c, \S\ref{ssec:recalib}) widens the gap (offline AUROC rises to 0.910) but introduces a third: each recalibration event creates a reward discontinuity that destabilizes advantage estimates, collapsing entropy to 0.069 within 300 steps.
-Amplification (F1d, $5{\times}$ scaling) lifts $\rone$ above the noise floor but surfaces the fundamental limitation: $\rthree$ saturates at 0.9998 by step 300, leaving the noisy $\rone$, which conflates warranted revision with unwarranted capitulation, as the sole gradient source until terminal collapse at step 2160.
+F1a's dot-product formulation ($\rone = \tanh(\mathbf{h} \cdot \dsyc / 20)$) saturates because residual-stream norms exceed the direction norm by orders of magnitude, zeroing the gradient early in training.
+Cosine similarity (F1b) eliminates this norm dependence but reveals a second problem: the gap between valid and sycophantic cosines is too narrow for meaningful reward contrast.
+Recalibration (F1c, \S\ref{ssec:recalib}) widens the gap but introduces a third: each recalibration event creates a reward discontinuity that destabilizes advantage estimates, collapsing entropy within hundreds of steps.
+Amplification (F1d, $5{\times}$ scaling) lifts $\rone$ above the noise floor but surfaces the fundamental limitation: $\rthree$ rapidly saturates, leaving the noisy $\rone$, which conflates warranted revision with unwarranted capitulation, as the sole gradient source until terminal collapse (Table~\ref{tab:cosine_chain}).
 
 Truncation further degrades the signal: under the 256-token maximum completion length used in GRPO, $\dsyc$ AUROC drops from 0.76 (full response) to 0.60, so the offline discriminability (0.827) substantially overestimates the signal available during training.
 Checkpoint-level evaluation confirms immediate collapse: $\tof{=}0$ from step 500 onward with no stable phase.
